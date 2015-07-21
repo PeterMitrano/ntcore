@@ -1,7 +1,18 @@
 cmake_minimum_required(VERSION 2.8)
 project(ntcore)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wformat=2 -Wall -Wextra -Werror -pedantic -Wno-unused-parameter")
+include(CheckCXXCompilerFlag)
+
+macro(filter_valid_compiler_flags) 
+  foreach(flag ${ARGN})
+    CHECK_CXX_COMPILER_FLAG(${flag} R${flag})
+    if(${R${flag}})
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}")
+    endif()
+  endforeach()
+endmacro()
+
+filter_valid_compiler_flags(-std=c++1y -Wformat=2 -Wall -Wextra -Werror -pedantic -Wno-unused-parameter)
 
 file(GLOB_RECURSE SRC_TARGET_FILES src/*.cpp)
 #file(GLOB_RECURSE SRC_SHARE_FILES lib/share/*.cpp)
